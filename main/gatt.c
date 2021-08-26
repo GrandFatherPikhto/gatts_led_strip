@@ -1,4 +1,10 @@
 #include "common.h"
+/**
+ * Этот пример сделан из штатного примера GATT-Server esp-idf/examples/bluetooth/bluedroid/ble/gatt_server
+ * https://github.com/espressif/esp-idf/tree/master/examples/bluetooth/bluedroid/ble/gatt_server
+ * Производится обмен не зашифрованными данными через интерфейсы BLE
+ * Интерфейс нельзя сопрягать
+ */
 
 /** */
 static uint8_t adv_config_done       = 0;
@@ -110,7 +116,10 @@ static struct gatts_profile_inst blinker_profile_tab[PROFILE_NUM] = {
 };
 
 
-/* Service */
+/**
+ *  Если мы будем использовать 16-битные адреса, программа будет использовать 
+ * Для всех "штатный" адрес 000000FF-6418-5C4B-A046-0101910B5AD40711
+ * */
 // static const uint16_t GATTS_SERVICE_UUID_TEST      = 0x00FF;
 // static const uint16_t GATTS_CHAR_UUID_TEST_A       = 0xFF01;
 // static const uint16_t GATTS_CHAR_UUID_TEST_B       = 0xFF02;
