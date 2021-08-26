@@ -1,0 +1,12 @@
+{
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "idf.adapterTargetName": "esp32",
+    "idf.customExtraPaths": "/home/denis/.espressif/tools/xtensa-esp32-elf/esp-2021r1-8.4.0/xtensa-esp32-elf/bin:/home/denis/.espressif/tools/xtensa-esp32s2-elf/esp-2021r1-8.4.0/xtensa-esp32s2-elf/bin:/home/denis/.espressif/tools/xtensa-esp32s3-elf/esp-2021r1-8.4.0/xtensa-esp32s3-elf/bin:/home/denis/.espressif/tools/riscv32-esp-elf/esp-2021r1-8.4.0/riscv32-esp-elf/bin:/home/denis/.espressif/tools/esp32ulp-elf/2.28.51-esp-20191205/esp32ulp-elf-binutils/bin:/home/denis/.espressif/tools/esp32s2ulp-elf/2.28.51-esp-20191205/esp32s2ulp-elf-binutils/bin:/home/denis/.espressif/tools/openocd-esp32/v0.10.0-esp32-20210721/openocd-esp32/bin",
+    "idf.customExtraVars": "{\"OPENOCD_SCRIPTS\":\"/home/denis/.espressif/tools/openocd-esp32/v0.10.0-esp32-20210721/openocd-esp32/share/openocd/scripts\"}",
+    "idf.espIdfPath": "/home/denis/espressif/esp-idf",
+    "idf.espAdfPath": "/home/denis/espressif/esp-adf",
+    "idf.espMdfPath": "/home/denis/espressif/esp-mdf",
+    "idf.port": "/dev/ttyUSB0",
+    "idf.pythonBinPath": "/home/denis/.espressif/python_env/idf4.4_py3.9_env/bin/python",
+    "idf.toolsPath": "/home/denis/.espressif"
+}
