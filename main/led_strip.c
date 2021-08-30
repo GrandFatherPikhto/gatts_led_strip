@@ -1,8 +1,6 @@
 #include "common.h"
 
 led_strip_t *strip = NULL;
-/** */
-uint8_t regime     = STRIP_REGIME_OFF;
 
 /**
  * @brief Simple helper function, converting HSV color space to RGB color space
@@ -96,7 +94,7 @@ bool set_regime(uint8_t regime) {
             strip->refresh(strip, 10);
             return true;
         case STRIP_REGIME_ALL:
-            set_strip_color(color_value);
+            set_strip_color(led_strip_color);
             strip->refresh(strip, 10);
             return true;
         break;
@@ -113,10 +111,9 @@ bool set_regime(uint8_t regime) {
  * Устанавливает цвет свечения ленты светодиодов
  */
 bool set_strip_color(const uint8_t color[4]) {
-    if(regime == STRIP_REGIME_ALL) {
+    if(led_strip_regime == STRIP_REGIME_ALL) {
         // strip->clear(strip, 100);
         // vTaskDelay(pdMS_TO_TICKS(100));
-        ESP_LOGI(RMT_TAG, "Светить всеми лампочками");
         for(int i = 0; i < STRIP_LED_NUMBER; i++) {
             ESP_ERROR_CHECK(strip->set_pixel(strip, i, color[2], color[1], color[0]));
         }
@@ -132,7 +129,7 @@ bool set_strip_color(const uint8_t color[4]) {
  * 
  **/
 void led_strip_next() {
-    if(regime == STRIP_REGIME_RUN) {
+    if(led_strip_regime == STRIP_REGIME_RUN) {
         // strip->clear(strip, 100);
         static int number = 0;
         int i,j, pos;
@@ -141,9 +138,9 @@ void led_strip_next() {
             if(j < STRIP_LED_TAIL) {
                 ESP_ERROR_CHECK(strip->set_pixel(
                     strip, pos
-                    , color_value[2]
-                    , color_value[1]
-                    , color_value[0]));
+                    , led_strip_color[2]
+                    , led_strip_color[1]
+                    , led_strip_color[0]));
             } else {
                 ESP_ERROR_CHECK(strip->set_pixel(strip, pos, 0x00, 0x00, 0x0));
             }

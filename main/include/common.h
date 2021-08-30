@@ -15,11 +15,10 @@
 
 #include "led_strip.h"
 #include "led_strip_rmt_ws2812.h"
-#include "gatt.h"
+#include "gatts.h"
 #include "timer_group.h"
 
-#define GATTS_TABLE_TAG "BLINKER"
-#define RMT_TAG "LedStrip"
+#define DEVICE_NAME "LED_STRIP"
 
 #define RMT_TX_GPIO       18
 #define STRIP_LED_NUMBER  16
