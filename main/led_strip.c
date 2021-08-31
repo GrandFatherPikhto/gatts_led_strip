@@ -69,15 +69,65 @@ bool init_strip() {
     strip = led_strip_new_rmt_ws2812(&strip_config);
 
     if (!strip) {
-        ESP_LOGE(RMT_TAG, "install WS2812 driver failed");
+        ESP_LOGE(LED_STRIP_TAG, "install WS2812 driver failed");
         return false;
     }
     // Clear LED strip (turn off all LEDs)
     ESP_ERROR_CHECK(strip->clear(strip, 10));
     // Show simple rainbow chasing pattern
-    ESP_LOGI(RMT_TAG, "LED Rainbow Chase Start");
+    ESP_LOGI(LED_STRIP_TAG, "LED Rainbow Chase Start");
 
-    set_regime(STRIP_REGIME_OFF);
+    led_strip_set_regime(LED_STRIP_REGIME_OFF);
+
+    return true;
+}
+
+/**
+ * 
+ */
+bool led_strip_set_off() {
+    for(int i = 0; i < STRIP_LED_NUMBER; i++) {
+        ESP_ERROR_CHECK(strip->set_pixel(strip, i, 0, 0, 0));
+    }
+
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+
+    return true;
+}
+
+/**
+ * 
+ */
+bool led_strip_set_on() {
+    if(led_strip_regime != LED_STRIP_REGIME_OFF) {
+        for(int i = 0; i < STRIP_LED_NUMBER; i++) {
+            ESP_ERROR_CHECK(strip->set_pixel(strip, i, 
+            led_strip_color[0], 
+            led_strip_color[1], 
+            led_strip_color[2]));
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+        // Flush RGB values to LEDs
+        ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    }
+
+    return true;
+}
+
+
+/**
+ * Устанавливает цвет свечения ленты светодиодов
+ */
+bool led_strip_set_color(const uint8_t *color) {
+    led_strip_color[0] = color[2];
+    led_strip_color[1] = color[1];
+    led_strip_color[2] = color[0];
+    // esp_log_buffer_hex(LED_STRIP_TAG, led_strip_color, COLOR_LEN);
+    
+    led_strip_set_on();
 
     return true;
 }
@@ -85,71 +135,162 @@ bool init_strip() {
 /**
  * 
  **/
-bool set_regime(uint8_t regime) {
-    ESP_LOGI(RMT_TAG, "Режим: %d", regime);
-    switch(regime) {
-        case STRIP_REGIME_OFF:
-            // return set_strip_color({0, 0, 0, 0});
-            strip->clear(strip, 5);
-            strip->refresh(strip, 10);
-            return true;
-        case STRIP_REGIME_ALL:
-            set_strip_color(led_strip_color);
-            strip->refresh(strip, 10);
-            return true;
+bool led_strip_set_regime(uint8_t regime) {
+    ESP_LOGI(LED_STRIP_TAG, "Режим: %d", regime);
+    led_strip_regime = regime;
+    switch(led_strip_regime) {
+        case LED_STRIP_REGIME_OFF:
+            led_strip_set_off();
         break;
-        case STRIP_REGIME_RUN:
-            return true;
+
+        case LED_STRIP_REGIME_ALL:
+            led_strip_set_on();
+        break;
+
         default:
-            return false;
+        break;
     }
+    if(led_strip_regime == LED_STRIP_REGIME_OFF) {
+        led_strip_set_off();
+    } 
 
     return true;
 }
 
 /**
- * Устанавливает цвет свечения ленты светодиодов
+ * 
  */
-bool set_strip_color(const uint8_t color[4]) {
-    if(led_strip_regime == STRIP_REGIME_ALL) {
-        // strip->clear(strip, 100);
-        // vTaskDelay(pdMS_TO_TICKS(100));
-        for(int i = 0; i < STRIP_LED_NUMBER; i++) {
-            ESP_ERROR_CHECK(strip->set_pixel(strip, i, color[2], color[1], color[0]));
+void led_strip_next_tag() {
+    uint32_t red;
+    uint32_t green;
+    uint32_t blue;
+    uint32_t hue;
+    static uint32_t start_rgb = 0;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = i; j < STRIP_LED_NUMBER; j += 3) {
+            // Build RGB values
+            hue = j * 360 / STRIP_LED_NUMBER + start_rgb;
+            led_strip_hsv2rgb(hue, 100, 100, &red, &green, &blue);
+            // Write RGB values to strip driver
+            ESP_ERROR_CHECK(strip->set_pixel(strip, j, red, green, blue));
         }
-        // vTaskDelay(pdMS_TO_TICKS(10));
+        // Flush RGB values to LEDs
         ESP_ERROR_CHECK(strip->refresh(strip, 100));
-        return true;
+        vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+        strip->clear(strip, 50);
+        vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+    }
+    start_rgb += 60;
+}
+
+
+
+/**
+ * 
+ */
+void led_strip_next_color() {
+    uint8_t value = 0;
+    bool direct = true;
+    uint32_t red;
+    uint32_t green;
+    uint32_t blue;
+    uint32_t hue;
+    static uint32_t start_rgb = 0;
+    for(int i = 0; i < STRIP_LED_NUMBER; i++) {
+        hue = 360 / STRIP_LED_NUMBER + start_rgb;
+        led_strip_hsv2rgb(hue + i, 100, value, &red, &green, &blue);
+        ESP_ERROR_CHECK(strip->set_pixel(strip, i, red, green, blue));
+        if(direct) {
+            value +=2;
+            if(value >= 100)
+                direct = false;
+        } else {
+            value -= 2;
+            if(value == 0) {
+                direct = true;
+            }
+        }
+        
     }
 
-    return false;
+    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+    // strip->clear(strip, 50);
+    // vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+    start_rgb ++;
+}
+
+/**
+ * 
+ */
+void led_strip_next_tail() {
+    uint32_t red;
+    uint32_t green;
+    uint32_t blue;
+    uint32_t hue;
+    static uint32_t start_rgb = 0;
+    static uint16_t num = 0;
+    uint16_t pos = 0;
+    hue = 360 / STRIP_LED_NUMBER + start_rgb;
+    uint8_t value = 100;
+
+    for(int i = 0; i < STRIP_LED_NUMBER; i++) {
+        pos = (i + num) % STRIP_LED_NUMBER;
+        if(i >= num && i <= num + STRIP_LED_TAIL) {
+            led_strip_hsv2rgb(hue + i, 100, value, &red, &green, &blue);
+            value -= 2;
+        } else {
+            led_strip_hsv2rgb(hue + i, 0, 0, &red, &green, &blue);
+        }
+        ESP_ERROR_CHECK(strip->set_pixel(strip, pos, red, green, blue));
+    }
+
+    num ++;
+    if(num >= STRIP_LED_NUMBER) {
+        num = 0;
+    }
+
+    start_rgb ++;
+
+    ESP_ERROR_CHECK(strip->refresh(strip, CHASE_SPEED_MS));
+    vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+}
+
+/**
+ * 
+ */
+void led_strip_next_blink() {
+    ESP_ERROR_CHECK(strip->refresh(strip, CHASE_SPEED_MS));
+    led_strip_set_on();
+    vTaskDelay(pdMS_TO_TICKS(led_strip_blink_period - 10));
+    strip->clear(strip, 50);
+    vTaskDelay(pdMS_TO_TICKS(10));
 }
 
 /**
  * 
  **/
 void led_strip_next() {
-    if(led_strip_regime == STRIP_REGIME_RUN) {
-        // strip->clear(strip, 100);
-        static int number = 0;
-        int i,j, pos;
-        for(i = number, j = 0; j < STRIP_LED_NUMBER; i++, j++) {
-            pos = i % STRIP_LED_NUMBER;
-            if(j < STRIP_LED_TAIL) {
-                ESP_ERROR_CHECK(strip->set_pixel(
-                    strip, pos
-                    , led_strip_color[2]
-                    , led_strip_color[1]
-                    , led_strip_color[0]));
-            } else {
-                ESP_ERROR_CHECK(strip->set_pixel(strip, pos, 0x00, 0x00, 0x0));
-            }
-        }
+    switch (led_strip_regime) {
+    case LED_STRIP_REGIME_TAG:
+        led_strip_next_tag ();
+        break;
+    
+    case LED_STRIP_REGIME_RUN_COLOR:
+        led_strip_next_color();
+        break;
 
-        ESP_ERROR_CHECK(strip->refresh(strip, 100));
-        number ++;
-        if(number >= STRIP_LED_NUMBER) {
-            number = 0;
-        }
+    case LED_STRIP_REGIME_RUN_TAIL:
+        led_strip_next_tail();
+        break;
+
+    case LED_STRIP_REGIME_BLINK:
+        led_strip_next_blink();
+        break;
+
+    default:
+        vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+        break;
     }
 }

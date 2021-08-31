@@ -14,8 +14,8 @@
 void app_main(void) {
     init_gatt();
     init_strip();
-    init_tg_timer(TIMER_GROUP_0, TIMER_0, true, 100);
+    // init_tg_timer(TIMER_GROUP_0, TIMER_0, true, 100);
     while(true) {
-        next_tick();
+        led_strip_next();
     } 
 }

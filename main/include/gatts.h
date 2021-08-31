@@ -46,8 +46,9 @@
 #define ADV_CONFIG_FLAG             (1 << 0)
 #define SCAN_RSP_CONFIG_FLAG        (1 << 1)
 
-extern uint8_t  led_strip_color [4];
+extern uint8_t  led_strip_color [COLOR_LEN];
 extern uint8_t  led_strip_regime;
+extern uint16_t led_strip_blink_period;
 
 typedef struct {
     uint8_t                 *prepare_buf;

@@ -4,7 +4,7 @@
 
  uint16_t led_strip_handle_table[LED_STRIP_IDX_NB];
 
- uint8_t test_manufacturer[3]={'E', 'S', 'P'};
+ uint8_t test_manufacturer[3]={'R', 'Q', 'D'};
 
  uint8_t sec_service_uuid[16] = {
     /* LSB <--------------------------------------------------------------------------------> MSB */
@@ -79,9 +79,11 @@ struct gatts_profile_inst {
  */
 
 /** Цвета светодиодной адресной ленты */
- uint8_t led_strip_color[4] = {0x23, 0x00, 0x00, 0x00};
+ uint8_t led_strip_color[COLOR_LEN] = {0x23, 0x00, 0x00};
 /** Режим работы светодиодной ленты */
-uint8_t led_strip_regime = STRIP_REGIME_OFF;
+uint8_t led_strip_regime = LED_STRIP_REGIME_OFF;
+/** Период мерцания ленты */
+uint16_t led_strip_blink_period = 50;
 
 #define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
 /** UIID сервиса светодиодной ленты */
@@ -381,19 +383,15 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
         esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) {
     if (!param->write.is_prep){
         // the data length of gattc write  must be less than GATTS_DEMO_CHAR_VAL_LEN_MAX.
-        ESP_LOGI(GATTS_TABLE_TAG, "GATT_WRITE_EVT, handle = %d, value len = %d", param->write.handle, param->write.len);
+        // ESP_LOGI(GATTS_TABLE_TAG, "GATT_WRITE_EVT, handle = %d, value len = %d", param->write.handle, param->write.len);
         // print_handle_table();
-        esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
+        // esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
         if (led_strip_handle_table[IDX_CHAR_VAL_COLOR] == param->write.handle && param->write.len == 4){
-            for(uint8_t i = 0; i < 4; i++) {
-                led_strip_color[i] = param->write.value[i];
-            }
-            esp_log_buffer_hex("Новый цвет", led_strip_color, 4);
-            set_strip_color(led_strip_color);
+            // esp_log_buffer_hex("Новый цвет", param->write.value, param->write.len);
+            led_strip_set_color(param->write.value);
         } if (led_strip_handle_table[IDX_CHAR_VAL_REGIME] == param->write.handle && param->write.len == 1){
-            led_strip_regime = param->write.value[0];
-            set_regime(led_strip_regime);
-            ESP_LOGI(GATTS_TABLE_TAG, "Режим работы = %d", led_strip_regime);
+            led_strip_set_regime(param->write.value[0]);
+            ESP_LOGI(GATTS_TABLE_TAG, "Режим работы = %d", param->write.value[0]);
         } if (led_strip_handle_table[IDX_CHAR_CFG_COLOR] == param->write.handle && param->write.len == 2){
             /* Indicate требует подтверждения, а Notify - нет. */
             uint16_t descr_value = param->write.value[1]<<8 | param->write.value[0];
