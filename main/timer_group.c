@@ -50,7 +50,7 @@ bool IRAM_ATTR timer_group_isr_callback(void *args) {
  * @param auto_reload whether auto-reload on alarm event
  * @param timer_interval_sec interval of alarm
  */
-bool init_tg_timer(int group, int timer, bool auto_reload, int timer_interval_sec) {
+bool init_tg_timer(int group, int timer, bool auto_reload, int timer_interval_msec) {
     if(queue_inited == false) {
         s_timer_queue = xQueueCreate(10, sizeof(timer_event_t));
         queue_inited = true;
@@ -71,14 +71,14 @@ bool init_tg_timer(int group, int timer, bool auto_reload, int timer_interval_se
     timer_set_counter_value(group, timer, 0);
 
     /* Configure the alarm value and the interrupt on alarm. */
-    timer_set_alarm_value(group, timer, timer_interval_sec * TIMER_SCALE);
+    timer_set_alarm_value(group, timer, timer_interval_msec * TIMER_SCALE);
     timer_enable_intr(group, timer);
 
     timer_info_t *timer_info = calloc(1, sizeof(timer_info_t));
     timer_info->timer_group = group;
     timer_info->timer_idx = timer;
     timer_info->auto_reload = auto_reload;
-    timer_info->alarm_interval = timer_interval_sec;
+    timer_info->alarm_interval = timer_interval_msec;
     timer_isr_callback_add(group, timer, timer_group_isr_callback, timer_info, 0);
 
     timer_start(group, timer);

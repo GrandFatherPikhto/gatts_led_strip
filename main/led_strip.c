@@ -86,12 +86,11 @@ bool init_strip() {
  * 
  */
 bool led_strip_set_off() {
-    for(int i = 0; i < STRIP_LED_NUMBER; i++) {
-        ESP_ERROR_CHECK(strip->set_pixel(strip, i, 0, 0, 0));
+    static bool cleared = false;
+    if(cleared == false) {
+        strip->clear(strip, 100);
+        cleared = true;
     }
-
-    // Flush RGB values to LEDs
-    ESP_ERROR_CHECK(strip->refresh(strip, 100));
     vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
 
     return true;
@@ -100,18 +99,30 @@ bool led_strip_set_off() {
 /**
  * 
  */
-bool led_strip_set_on() {
-    if(led_strip_regime != LED_STRIP_REGIME_OFF) {
-        for(int i = 0; i < STRIP_LED_NUMBER; i++) {
-            ESP_ERROR_CHECK(strip->set_pixel(strip, i, 
-            led_strip_color[0], 
-            led_strip_color[1], 
-            led_strip_color[2]));
-        }
+bool led_strip_refresh_color() {
+    esp_log_buffer_hex("Новый цвет", led_strip_color, COLOR_LEN);
+    for(int i = 0; i < STRIP_LED_NUMBER; i++) {
+        ESP_ERROR_CHECK(strip->set_pixel(strip, i, 
+        led_strip_color[0], 
+        led_strip_color[1], 
+        led_strip_color[2]));
+    }
 
-        vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
-        // Flush RGB values to LEDs
-        ESP_ERROR_CHECK(strip->refresh(strip, 100));
+    vTaskDelay(pdMS_TO_TICKS(CHASE_SPEED_MS));
+    // Flush RGB values to LEDs
+    ESP_ERROR_CHECK(strip->refresh(strip, 100));
+
+    return true;
+}
+
+/**
+ * 
+ */
+bool led_strip_set_on() {
+    strip->clear(strip, 50);
+    vTaskDelay(CHASE_SPEED_MS);
+    if(led_strip_regime != LED_STRIP_REGIME_OFF) {
+        led_strip_refresh_color();
     }
 
     return true;
@@ -127,7 +138,7 @@ bool led_strip_set_color(const uint8_t *color) {
     led_strip_color[2] = color[0];
     // esp_log_buffer_hex(LED_STRIP_TAG, led_strip_color, COLOR_LEN);
     
-    led_strip_set_on();
+    led_strip_refresh_color();
 
     return true;
 }
@@ -140,7 +151,7 @@ bool led_strip_set_regime(uint8_t regime) {
     led_strip_regime = regime;
     switch(led_strip_regime) {
         case LED_STRIP_REGIME_OFF:
-            led_strip_set_off();
+            strip->clear(strip, 100);
         break;
 
         case LED_STRIP_REGIME_ALL:
@@ -190,7 +201,7 @@ void led_strip_next_tag() {
  * 
  */
 void led_strip_next_color() {
-    uint8_t value = 0;
+    static uint8_t value = 0;
     bool direct = true;
     uint32_t red;
     uint32_t green;
@@ -199,7 +210,7 @@ void led_strip_next_color() {
     static uint32_t start_rgb = 0;
     for(int i = 0; i < STRIP_LED_NUMBER; i++) {
         hue = 360 / STRIP_LED_NUMBER + start_rgb;
-        led_strip_hsv2rgb(hue + i, 100, value, &red, &green, &blue);
+        led_strip_hsv2rgb(hue + i, 100, 100, &red, &green, &blue);
         ESP_ERROR_CHECK(strip->set_pixel(strip, i, red, green, blue));
         if(direct) {
             value +=2;
@@ -207,7 +218,7 @@ void led_strip_next_color() {
                 direct = false;
         } else {
             value -= 2;
-            if(value == 0) {
+            if(value == 10) {
                 direct = true;
             }
         }
@@ -262,9 +273,9 @@ void led_strip_next_tail() {
  */
 void led_strip_next_blink() {
     ESP_ERROR_CHECK(strip->refresh(strip, CHASE_SPEED_MS));
-    led_strip_set_on();
+    led_strip_refresh_color();
     vTaskDelay(pdMS_TO_TICKS(led_strip_blink_period - 10));
-    strip->clear(strip, 50);
+    strip->clear(strip, 10);
     vTaskDelay(pdMS_TO_TICKS(10));
 }
 
@@ -273,6 +284,9 @@ void led_strip_next_blink() {
  **/
 void led_strip_next() {
     switch (led_strip_regime) {
+    case LED_STRIP_REGIME_OFF:
+        led_strip_set_off();
+        break;
     case LED_STRIP_REGIME_TAG:
         led_strip_next_tag ();
         break;
