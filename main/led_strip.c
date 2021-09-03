@@ -295,11 +295,11 @@ void led_strip_next() {
         led_strip_next_tag ();
         break;
     
-    case LED_STRIP_REGIME_RUN_COLOR:
+    case LED_STRIP_REGIME_WHATER:
         led_strip_next_color();
         break;
 
-    case LED_STRIP_REGIME_RUN_TAIL:
+    case LED_STRIP_REGIME_TAIL:
         led_strip_next_tail();
         break;
 
