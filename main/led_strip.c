@@ -100,7 +100,7 @@ bool led_strip_set_off() {
  * 
  */
 bool led_strip_refresh_color() {
-    esp_log_buffer_hex("Новый цвет", led_strip_color, COLOR_LEN);
+    // esp_log_buffer_hex("Новый цвет", led_strip_color, COLOR_LEN);
     for(int i = 0; i < STRIP_LED_NUMBER; i++) {
         ESP_ERROR_CHECK(strip->set_pixel(strip, i, 
         led_strip_color[0], 
