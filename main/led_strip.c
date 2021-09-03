@@ -137,8 +137,9 @@ bool led_strip_set_color(const uint8_t *color) {
     led_strip_color[1] = color[1];
     led_strip_color[2] = color[0];
     // esp_log_buffer_hex(LED_STRIP_TAG, led_strip_color, COLOR_LEN);
-    
-    led_strip_refresh_color();
+    if(led_strip_regime != LED_STRIP_REGIME_OFF) {
+        led_strip_refresh_color();
+    }
 
     return true;
 }
@@ -151,7 +152,9 @@ bool led_strip_set_regime(uint8_t regime) {
     led_strip_regime = regime;
     switch(led_strip_regime) {
         case LED_STRIP_REGIME_OFF:
+            ESP_LOGI(LED_STRIP_TAG, "Очистить ленту. Получен режим 0");
             strip->clear(strip, 100);
+            // strip->refresh(strip, 100);
         break;
 
         case LED_STRIP_REGIME_ALL:
@@ -161,6 +164,7 @@ bool led_strip_set_regime(uint8_t regime) {
         default:
         break;
     }
+
     if(led_strip_regime == LED_STRIP_REGIME_OFF) {
         led_strip_set_off();
     } 

@@ -233,7 +233,7 @@ void show_bonded_devices(void)
 
     esp_ble_bond_dev_t *dev_list = (esp_ble_bond_dev_t *)malloc(sizeof(esp_ble_bond_dev_t) * dev_num);
     esp_ble_get_bond_device_list(&dev_num, dev_list);
-    ESP_LOGI(GATTS_TABLE_TAG, "Чисто связанных устройств : %d\n", dev_num);
+    ESP_LOGI(GATTS_TABLE_TAG, "Число связанных устройств : %d\n", dev_num);
 
     ESP_LOGI(GATTS_TABLE_TAG, "Список связанных устройств : %d\n", dev_num);
     for (int i = 0; i < dev_num; i++) {
