@@ -83,7 +83,7 @@ struct gatts_profile_inst {
 /** Режим работы светодиодной ленты */
 uint8_t led_strip_regime = LED_STRIP_REGIME_OFF;
 /** Период мерцания ленты */
-uint16_t led_strip_blink_period = 50;
+uint16_t led_strip_blink_period = 71;
 
 #define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
 /** UIID сервиса светодиодной ленты */
