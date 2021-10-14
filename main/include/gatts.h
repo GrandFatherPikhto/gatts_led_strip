@@ -48,25 +48,43 @@
 
 extern uint8_t  led_strip_color [COLOR_LEN];
 extern uint8_t  led_strip_regime;
-extern uint16_t led_strip_blink_period;
+extern uint16_t blink_period[2];
 
 typedef struct {
     uint8_t                 *prepare_buf;
     int                     prepare_len;
 } prepare_type_env_t;
 
+typedef void (*characteristic_handler_function) (uint8_t *data, uint8_t length);
+
 /* Attributes State Machine */
 enum
 {
     IDX_LED_STRIP_SVC,
 
+    IDX_CHAR_REGIME,
+    IDX_CHAR_VAL_REGIME,
+    IDX_CHAR_CFG_REGIME,
+
     IDX_CHAR_COLOR,
     IDX_CHAR_VAL_COLOR,
     IDX_CHAR_CFG_COLOR,
 
-    IDX_CHAR_REGIME,
-    IDX_CHAR_VAL_REGIME,
-    IDX_CHAR_CFG_REGIME,
+    IDX_CHAR_BRIGHTNESS,
+    IDX_CHAR_VAL_BRIGHTNESS,
+    IDX_CHAR_CFG_BRIGHTNESS,
+
+    IDX_CHAR_SPEED,
+    IDX_CHAR_VAL_SPEED,
+    IDX_CHAR_CFG_SPEED,
+
+    IDX_CHAR_LENGTH,
+    IDX_CHAR_VAL_LENGTH,
+    IDX_CHAR_CFG_LENGTH,
+
+    IDX_CHAR_FREQUENCY,
+    IDX_CHAR_VAL_FREQUENCY,
+    IDX_CHAR_CFG_FREQUENCY,
 
     LED_STRIP_IDX_NB,
 };

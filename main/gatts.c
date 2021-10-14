@@ -70,47 +70,88 @@ struct gatts_profile_inst {
         .gatts_cb = gatts_profile_event_handler,
         .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
     },
-
 };
 
 /*
  *  Аттрибуты профиля Led Strip
  ****************************************************************************************
  */
-
-/** Цвета светодиодной адресной ленты */
- uint8_t led_strip_color[COLOR_LEN] = {0x23, 0x00, 0x00};
-/** Режим работы светодиодной ленты */
-uint8_t led_strip_regime = LED_STRIP_REGIME_OFF;
-/** Период мерцания ленты */
-uint16_t led_strip_blink_period = 71;
-
 #define CHAR_DECLARATION_SIZE   (sizeof(uint8_t))
 /** UIID сервиса светодиодной ленты */
- const uint8_t GATTS_SERVICE_UUID_LED_STRIP     [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0xFF, 0x00, 0x00, 0x00 };
- /** UUID характеристики цвета светодиодной ленты */
- const uint8_t GATTS_CHAR_UUID_LED_STRIP_COLOR  [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x01, 0xFF, 0x00, 0x00 };
+ const uint8_t GATTS_SERVICE_UUID_LED_STRIP [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0xFF, 0x00, 0x00, 0x00 };
  /** UUID характеристики режима работы свечения светодиодной ленты */
- const uint8_t GATTS_CHAR_UUID_LED_STRIP_REGIME [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x02, 0xFF, 0x00, 0x00 };
+ const uint8_t GATTS_CHAR_UUID_REGIME       [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x01, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики цвета светодиодной ленты */
+ const uint8_t GATTS_CHAR_UUID_COLOR        [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x02, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики цвета светодиодной ленты */  
+ const uint8_t GATTS_CHAR_UUID_BRIGHTNESS   [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x03, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики цвета светодиодной ленты */  
+ const uint8_t GATTS_CHAR_UUID_SPEED        [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x04, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики цвета светодиодной ленты */  
+ const uint8_t GATTS_CHAR_UUID_LENGTH       [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x05, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики цвета светодиодной ленты */
+ const uint8_t GATTS_CHAR_UUID_FREQUENCY    [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x06, 0xFF, 0x00, 0x00 };
+
 
  const uint16_t primary_service_uuid         = ESP_GATT_UUID_PRI_SERVICE;
  const uint16_t character_declaration_uuid   = ESP_GATT_UUID_CHAR_DECLARE;
  const uint16_t character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
  const uint8_t  char_prop_read_write_notify  = ESP_GATT_CHAR_PROP_BIT_WRITE | ESP_GATT_CHAR_PROP_BIT_READ | ESP_GATT_CHAR_PROP_BIT_NOTIFY;
- const uint8_t  color_ccc    [2]             = {0x01, 0x01};
- const uint8_t  regime_ccc   [2]             = {0x01, 0x01};
- const uint8_t  regime_value [1]             = {0x00};
+ 
+ const uint8_t  regime_ccc     [2] = {0x01, 0x01};
+ const uint8_t  color_ccc      [2] = {0x01, 0x01};
+ const uint8_t  brightness_ccc [2] = {0x01, 0x01};
+ const uint8_t  length_ccc     [2] = {0x01, 0x01};
+ const uint8_t  speed_ccc      [2] = {0x01, 0x01};
+ const uint8_t  frequency_ccc  [2] = {0x01, 0x01};
+
+ const uint8_t  regime_value     [1] = { 0x00 };
+ const uint8_t  color_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  brightness_value [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  length_value     [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  speed_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  blink_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  frequency_value  [4] = { 0x00, 0x00, 0x00, 0x00 };
+ 
+ /** Режим работы светодиодной ленты */
+uint8_t led_strip_regime = LED_STRIP_REGIME_OFF;
+/** Период мерцания ленты */
+uint16_t blink_period [2] = { 40, 10 };
+
+uint8_t ls_regime     [1] = { 0x00 };
+uint8_t ls_color      [4] = { 0x23, 0x00, 0x00, 0x00 };
+uint8_t ls_speed      [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_length     [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_brightness [1] = { 0x00 };
+uint8_t ls_frequency  [4] = { 0x00, 0x00, 0x00, 0x00 };
+
 
 /**
  * Полное описание Базы Данных аттрибутов LedStrip
  */
- const esp_gatts_attr_db_t led_strip_gatt_db[LED_STRIP_IDX_NB] =
+const esp_gatts_attr_db_t led_strip_gatt_db[LED_STRIP_IDX_NB] =
 {
     /* Объявление сервиса Мигалки */
     [IDX_LED_STRIP_SVC]    =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&primary_service_uuid, ESP_GATT_PERM_READ,
       sizeof(uint16_t), sizeof(GATTS_SERVICE_UUID_LED_STRIP), (uint8_t *)&GATTS_SERVICE_UUID_LED_STRIP}},
+    // ================================ Режим Работы Ленты
+    /* Характеристика Режима */
+    [IDX_CHAR_REGIME]      =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
 
+    /* Значение характеристики Режима Мигания */
+    [IDX_CHAR_VAL_REGIME]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_REGIME, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(regime_value), (uint8_t *)regime_value}},
+
+    /* Конфигурационный Дескриптор Клиента */
+    [IDX_CHAR_CFG_REGIME]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      sizeof(uint16_t), sizeof(regime_ccc), (uint8_t *)regime_ccc}},
+
+    // ================================ Цвет Ленты
     /* Характеристика Цвета Мигания */
     [IDX_CHAR_COLOR]     =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
@@ -118,28 +159,79 @@ uint16_t led_strip_blink_period = 71;
 
     /* Значение Характеристики Цвета Мигания */
     [IDX_CHAR_VAL_COLOR] =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_LED_STRIP_COLOR, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(led_strip_color), (uint8_t *)led_strip_color}},
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_COLOR, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(color_value), (uint8_t *)color_value}},
 
     /* Конфигурационный Дескриптор Клиента */
     [IDX_CHAR_CFG_COLOR]  =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
       sizeof(uint16_t), sizeof(color_ccc), (uint8_t *)color_ccc}},
 
+    // ================================ Яркость Светимости Ленты
     /* Характеристика Режима Мигания */
-    [IDX_CHAR_REGIME]      =
+    [IDX_CHAR_BRIGHTNESS]      =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
       CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
 
     /* Значение характеристики Режима Мигания */
-    [IDX_CHAR_VAL_REGIME]  =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_LED_STRIP_REGIME, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(regime_value), (uint8_t *)regime_value}},
+    [IDX_CHAR_VAL_BRIGHTNESS]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_BRIGHTNESS, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(brightness_value), (uint8_t *)brightness_value}},
 
     /* Конфигурационный Дескриптор Клиента */
-    [IDX_CHAR_CFG_REGIME]  =
+    [IDX_CHAR_CFG_BRIGHTNESS]  =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      sizeof(uint16_t), sizeof(regime_ccc), (uint8_t *)regime_ccc}}
+      sizeof(uint16_t), sizeof(brightness_ccc), (uint8_t *)brightness_ccc}},
+
+    // ================================ Скорость перемещения эффектов
+    /* Характеристика Режима Мигания */
+    [IDX_CHAR_SPEED]      =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
+
+    /* Значение характеристики Режима Мигания */
+    [IDX_CHAR_VAL_SPEED]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_SPEED, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(speed_value), (uint8_t *)speed_value}},
+
+    /* Конфигурационный Дескриптор Клиента */
+    [IDX_CHAR_CFG_SPEED]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      sizeof(uint16_t), sizeof(speed_ccc), (uint8_t *)speed_ccc}},
+
+    // ================================ Длина (в %) светящегося сегмента
+    /* Характеристика Режима Мигания */
+    [IDX_CHAR_LENGTH]      =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
+
+    /* Значение характеристики Режима Мигания */
+    [IDX_CHAR_VAL_LENGTH]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_LENGTH, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(length_value), (uint8_t *)length_value}},
+
+    /* Конфигурационный Дескриптор Клиента */
+    [IDX_CHAR_CFG_LENGTH]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      sizeof(uint16_t), sizeof(length_ccc), (uint8_t *)length_ccc}},
+
+
+    // ================================ Частота Мигания Ленты
+    /* Характеристика Режима Мигания */
+    [IDX_CHAR_FREQUENCY]      =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
+
+    /* Значение характеристики Режима Мигания */
+    [IDX_CHAR_VAL_FREQUENCY]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_FREQUENCY, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(frequency_value), (uint8_t *)frequency_value}},
+
+    /* Конфигурационный Дескриптор Клиента */
+    [IDX_CHAR_CFG_FREQUENCY]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      sizeof(uint16_t), sizeof(frequency_ccc), (uint8_t *)frequency_ccc}}
+
 };
 
 /**
@@ -375,6 +467,67 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
     }
 }
 
+void print_handle_table() {
+    printf("IDX_LED_STRIP_SVC: %d\n", led_strip_handle_table[IDX_LED_STRIP_SVC]);
+    printf("IDX_CHAR_REGIME: %d\n", led_strip_handle_table[IDX_CHAR_REGIME]);
+    
+    printf("IDX_CHAR_VAL_REGIME %d\n", led_strip_handle_table[IDX_CHAR_VAL_REGIME]);
+    printf("IDX_CHAR_CFG_REGIME %d\n", led_strip_handle_table[IDX_CHAR_CFG_REGIME]);
+
+    printf("IDX_CHAR_COLOR %d\n", led_strip_handle_table[IDX_CHAR_COLOR]);
+    printf("IDX_CHAR_VAL_COLOR %d\n", led_strip_handle_table[IDX_CHAR_VAL_COLOR]);
+    printf("IDX_CHAR_CFG_COLOR %d\n", led_strip_handle_table[IDX_CHAR_CFG_COLOR]);
+}
+
+/**
+ * Обработчик характеристики.
+ **/
+void handle_characteristic(esp_gatts_cb_event_t event, // Событие
+        esp_gatt_if_t gatts_if, // Интерфейс
+        esp_ble_gatts_cb_param_t *param, // Параметры
+        uint8_t val_idx, // Индекс значения
+        uint8_t cfg_idx, // Индекс конфигурации
+        uint8_t **value,  // Значение (куда копировать)
+        uint8_t len,     // Длина значения в байтах)
+        characteristic_handler_function fun // Функция-обработчик пришедшего значения
+) {
+    if (led_strip_handle_table[val_idx] == param->write.handle && param->write.len == len) {
+        // printf("%d %d\n", sizeof(value), len);
+        // memcpy(*value, param->write.value, param->write.len);
+        fun(param->write.value, param->write.len);
+    }
+    
+    if (led_strip_handle_table[cfg_idx] == param->write.handle && param->write.len == 2){
+        /* Indicate требует подтверждения, а Notify - нет. */
+        uint16_t descr_value = param->write.value[1]<<8 | param->write.value[0];
+        if (descr_value == 0x0001){
+            ESP_LOGI(GATTS_TABLE_TAG, "Уведомление включено"); /// Notify
+            uint8_t notify_data[15];
+            for (int i = 0; i < sizeof(notify_data); ++i) {
+                notify_data[i] = i % 0xff;
+            }
+            //размер notify_data[] должно быть меньше MTU (Maximum Transfer Unit -- Максимальная Единица Передачи)
+            esp_ble_gatts_send_indicate(gatts_if, param->write.conn_id, led_strip_handle_table[val_idx],
+                                    sizeof(notify_data), notify_data, false);
+        } else if (descr_value == 0x0002){
+            ESP_LOGI(GATTS_TABLE_TAG, "Подтверждение включено"); /// Indicate
+            uint8_t indicate_data[15];
+            for (int i = 0; i < sizeof(indicate_data); ++i)
+            {
+                indicate_data[i] = i % 0xff;
+            }
+            // Размер indicate_data должен быть меньше, чем размер MTU
+            esp_ble_gatts_send_indicate(gatts_if, param->write.conn_id, led_strip_handle_table[cfg_idx],
+                                sizeof(indicate_data), indicate_data, true);
+        } else if (descr_value == 0x0000){
+            ESP_LOGI(GATTS_TABLE_TAG, "notify/indicate выключено ");
+        } else{
+            ESP_LOGE(GATTS_TABLE_TAG, "Неизвестное значение описателя");
+            esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
+        }
+    }
+}
+
 /**
  * Читать записанный параметр. Вообще, говоря, надо назвать read-param, но, увы,
  * write.
@@ -386,49 +539,43 @@ void gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
         // ESP_LOGI(GATTS_TABLE_TAG, "GATT_WRITE_EVT, handle = %d, value len = %d", param->write.handle, param->write.len);
         // print_handle_table();
         // esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
-        if (led_strip_handle_table[IDX_CHAR_VAL_COLOR] == param->write.handle && param->write.len == 4){
-            // esp_log_buffer_hex("Новый цвет", param->write.value, param->write.len);
-            led_strip_set_color(param->write.value);
-        } if (led_strip_handle_table[IDX_CHAR_VAL_REGIME] == param->write.handle && param->write.len == 1){
-            led_strip_set_regime(param->write.value[0]);
-            ESP_LOGI(GATTS_TABLE_TAG, "Режим работы = %d", param->write.value[0]);
-        } if (led_strip_handle_table[IDX_CHAR_CFG_COLOR] == param->write.handle && param->write.len == 2){
-            /* Indicate требует подтверждения, а Notify - нет. */
-            uint16_t descr_value = param->write.value[1]<<8 | param->write.value[0];
-            if (descr_value == 0x0001){
-                ESP_LOGI(GATTS_TABLE_TAG, "Уведомление включено"); /// Notify
-                uint8_t notify_data[15];
-                for (int i = 0; i < sizeof(notify_data); ++i)
-                {
-                    notify_data[i] = i % 0xff;
-                }
-                //размер notify_data[] должно быть меньше MTU (Maximum Transfer Unit -- Максимальная Единица Передачи)
-                esp_ble_gatts_send_indicate(gatts_if, param->write.conn_id, led_strip_handle_table[IDX_CHAR_VAL_COLOR],
-                                        sizeof(notify_data), notify_data, false);
-            }else if (descr_value == 0x0002){
-                ESP_LOGI(GATTS_TABLE_TAG, "Подтверждение включено"); /// Indicate
-                uint8_t indicate_data[15];
-                for (int i = 0; i < sizeof(indicate_data); ++i)
-                {
-                    indicate_data[i] = i % 0xff;
-                }
-                // Размер indicate_data должен быть меньше, чем размер MTU
-                esp_ble_gatts_send_indicate(gatts_if, param->write.conn_id, led_strip_handle_table[IDX_CHAR_VAL_COLOR],
-                                    sizeof(indicate_data), indicate_data, true);
-            }
-            else if (descr_value == 0x0000){
-                ESP_LOGI(GATTS_TABLE_TAG, "notify/indicate выключено ");
-            }else{
-                ESP_LOGE(GATTS_TABLE_TAG, "Неизвестное значение описателя");
-                esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
-            }
+        // printf("Байт: %d, Привод: %d [%d]\n", param->write.len, param->write.handle, led_strip_handle_table[IDX_CHAR_VAL_REGIME]);
 
-        }
+        handle_characteristic(event, gatts_if, param, 
+            IDX_CHAR_VAL_REGIME, IDX_CHAR_CFG_REGIME, 
+            (uint8_t**)&ls_regime, 1, 
+            &led_strip_set_regime);
+        
+        handle_characteristic(event, gatts_if, param,
+            IDX_CHAR_VAL_COLOR, IDX_CHAR_CFG_COLOR,
+            (uint8_t**)&ls_color, 4, 
+            &led_strip_set_color);
+        
+        handle_characteristic(event, gatts_if, param, 
+            IDX_CHAR_VAL_BRIGHTNESS, IDX_CHAR_CFG_BRIGHTNESS, 
+            (uint8_t**)&ls_brightness, 4, 
+            &led_strip_set_brightness);
+        
+        handle_characteristic(event, gatts_if, param, 
+            IDX_CHAR_VAL_SPEED, IDX_CHAR_CFG_SPEED, 
+            (uint8_t**)&ls_speed, 4, 
+            &led_strip_set_speed);
+        
+        handle_characteristic(event, gatts_if, param, 
+            IDX_CHAR_VAL_LENGTH, IDX_CHAR_CFG_LENGTH, 
+            (uint8_t**)&ls_length, 4, 
+            &led_strip_set_length);
+        
+        handle_characteristic(event, gatts_if, param,
+            IDX_CHAR_VAL_FREQUENCY, IDX_CHAR_CFG_FREQUENCY, 
+            (uint8_t**)&ls_frequency, 4, 
+            &led_strip_set_frequency);
+
         /* send response when param->write.need_rsp is true*/
         if (param->write.need_rsp){
             esp_ble_gatts_send_response(gatts_if, param->write.conn_id, param->write.trans_id, ESP_GATT_OK, NULL);
         }
-    }else{
+    } else {
         /* Обработчик подготовки к записи */
         // example_prepare_write_event_env(gatts_if, &prepare_write_env, param);
     }
