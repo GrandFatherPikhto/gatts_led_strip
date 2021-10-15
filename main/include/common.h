@@ -20,9 +20,12 @@
 #include "gatts.h"
 #include "timer_group.h"
 
+#include "hsvrgb.h"
+
 #define DEVICE_NAME "LED_STRIP"
 
-#define RMT_TX_GPIO       18
-#define STRIP_LED_NUMBER  144
+#define RMT_TX_GPIO        18
+#define STRIP_LED_NUMBER   16
+#define TAIL_LED_NUMBER     5
 #define RMT_TX_CHANNEL    RMT_CHANNEL_3
-#define CHASE_SPEED_MS    10
+#define CHASE_SPEED_MS     10

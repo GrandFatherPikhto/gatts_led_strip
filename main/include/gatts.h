@@ -46,10 +46,6 @@
 #define ADV_CONFIG_FLAG             (1 << 0)
 #define SCAN_RSP_CONFIG_FLAG        (1 << 1)
 
-extern uint8_t  led_strip_color [COLOR_LEN];
-extern uint8_t  led_strip_regime;
-extern uint16_t blink_period[2];
-
 typedef struct {
     uint8_t                 *prepare_buf;
     int                     prepare_len;
@@ -74,17 +70,21 @@ enum
     IDX_CHAR_VAL_BRIGHTNESS,
     IDX_CHAR_CFG_BRIGHTNESS,
 
-    IDX_CHAR_SPEED,
-    IDX_CHAR_VAL_SPEED,
-    IDX_CHAR_CFG_SPEED,
+    IDX_CHAR_CHASE_SPEED,
+    IDX_CHAR_VAL_CHASE_SPEED,
+    IDX_CHAR_CFG_CHASE_SPEED,
 
-    IDX_CHAR_LENGTH,
-    IDX_CHAR_VAL_LENGTH,
-    IDX_CHAR_CFG_LENGTH,
+    IDX_CHAR_TAIL_LENGTH,
+    IDX_CHAR_VAL_TAIL_LENGTH,
+    IDX_CHAR_CFG_TAIL_LENGTH,
 
     IDX_CHAR_FREQUENCY,
     IDX_CHAR_VAL_FREQUENCY,
     IDX_CHAR_CFG_FREQUENCY,
+
+    IDX_CHAR_LS_LENGTH,
+    IDX_CHAR_VAL_LS_LENGTH,
+    IDX_CHAR_CFG_LS_LENGTH,
 
     LED_STRIP_IDX_NB,
 };

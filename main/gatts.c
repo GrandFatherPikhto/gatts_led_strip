@@ -83,14 +83,16 @@ struct gatts_profile_inst {
  const uint8_t GATTS_CHAR_UUID_REGIME       [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x01, 0xFF, 0x00, 0x00 };
  /** UUID характеристики цвета светодиодной ленты */
  const uint8_t GATTS_CHAR_UUID_COLOR        [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x02, 0xFF, 0x00, 0x00 };
- /** UUID характеристики цвета светодиодной ленты */  
+ /** UUID характеристики яркости светодиодной ленты */  
  const uint8_t GATTS_CHAR_UUID_BRIGHTNESS   [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x03, 0xFF, 0x00, 0x00 };
- /** UUID характеристики цвета светодиодной ленты */  
- const uint8_t GATTS_CHAR_UUID_SPEED        [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x04, 0xFF, 0x00, 0x00 };
- /** UUID характеристики цвета светодиодной ленты */  
- const uint8_t GATTS_CHAR_UUID_LENGTH       [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x05, 0xFF, 0x00, 0x00 };
- /** UUID характеристики цвета светодиодной ленты */
+ /** UUID характеристики скорости эффектов светодиодной ленты */  
+ const uint8_t GATTS_CHAR_UUID_CHASE_SPEED  [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x04, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики длины изменяющегося участка светодиодной ленты */  
+ const uint8_t GATTS_CHAR_UUID_TAIL_LENGTH  [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x05, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики частоты мерцания светодиодной ленты */
  const uint8_t GATTS_CHAR_UUID_FREQUENCY    [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x06, 0xFF, 0x00, 0x00 };
+ /** UUID характеристики частоты мерцания светодиодной ленты */
+ const uint8_t GATTS_CHAR_UUID_LS_LENGTH    [16] = { 0xd4, 0x5a, 0x0b, 0x91, 0x01, 0x01, 0x46, 0xa0, 0x4b, 0x5c, 0x18, 0x64, 0x07, 0xFF, 0x00, 0x00 };
 
 
  const uint16_t primary_service_uuid         = ESP_GATT_UUID_PRI_SERVICE;
@@ -98,32 +100,30 @@ struct gatts_profile_inst {
  const uint16_t character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
  const uint8_t  char_prop_read_write_notify  = ESP_GATT_CHAR_PROP_BIT_WRITE | ESP_GATT_CHAR_PROP_BIT_READ | ESP_GATT_CHAR_PROP_BIT_NOTIFY;
  
- const uint8_t  regime_ccc     [2] = {0x01, 0x01};
- const uint8_t  color_ccc      [2] = {0x01, 0x01};
- const uint8_t  brightness_ccc [2] = {0x01, 0x01};
- const uint8_t  length_ccc     [2] = {0x01, 0x01};
- const uint8_t  speed_ccc      [2] = {0x01, 0x01};
- const uint8_t  frequency_ccc  [2] = {0x01, 0x01};
+ const uint8_t  regime_ccc        [2] = {0x01, 0x01};
+ const uint8_t  color_ccc         [2] = {0x01, 0x01};
+ const uint8_t  brightness_ccc    [2] = {0x01, 0x01};
+ const uint8_t  tail_length_ccc   [2] = {0x01, 0x01};
+ const uint8_t  chase_speed_ccc   [2] = {0x01, 0x01};
+ const uint8_t  frequency_ccc     [2] = {0x01, 0x01};
+ const uint8_t  ls_length_ccc     [2] = {0x01, 0x01};
 
- const uint8_t  regime_value     [1] = { 0x00 };
- const uint8_t  color_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
- const uint8_t  brightness_value [4] = { 0x00, 0x00, 0x00, 0x00 };
- const uint8_t  length_value     [4] = { 0x00, 0x00, 0x00, 0x00 };
- const uint8_t  speed_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
- const uint8_t  blink_value      [4] = { 0x00, 0x00, 0x00, 0x00 };
- const uint8_t  frequency_value  [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  regime_value      [1] = { 0x00 };
+ const uint8_t  color_value       [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  brightness_value  [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  tail_length_value [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  chase_speed_value [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  blink_value       [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  frequency_value   [4] = { 0x00, 0x00, 0x00, 0x00 };
+ const uint8_t  ls_length_value   [4] = { 0x00, 0x00, 0x00, 0xFF };
  
- /** Режим работы светодиодной ленты */
-uint8_t led_strip_regime = LED_STRIP_REGIME_OFF;
-/** Период мерцания ленты */
-uint16_t blink_period [2] = { 40, 10 };
-
-uint8_t ls_regime     [1] = { 0x00 };
-uint8_t ls_color      [4] = { 0x23, 0x00, 0x00, 0x00 };
-uint8_t ls_speed      [4] = { 0x00, 0x00, 0x00, 0x00 };
-uint8_t ls_length     [4] = { 0x00, 0x00, 0x00, 0x00 };
-uint8_t ls_brightness [1] = { 0x00 };
-uint8_t ls_frequency  [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_regime      [1] = { 0x00 };
+uint8_t ls_color       [4] = { 0x23, 0x00, 0x00, 0x00 };
+uint8_t ls_chase_speed [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_tail_length [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_brightness  [1] = { 0x00 };
+uint8_t ls_frequency   [4] = { 0x00, 0x00, 0x00, 0x00 };
+uint8_t ls_length      [4] = { 0x00, 0x00, 0x00, 0x00 };
 
 
 /**
@@ -185,35 +185,35 @@ const esp_gatts_attr_db_t led_strip_gatt_db[LED_STRIP_IDX_NB] =
 
     // ================================ Скорость перемещения эффектов
     /* Характеристика Режима Мигания */
-    [IDX_CHAR_SPEED]      =
+    [IDX_CHAR_CHASE_SPEED]      =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
       CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
 
     /* Значение характеристики Режима Мигания */
-    [IDX_CHAR_VAL_SPEED]  =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_SPEED, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(speed_value), (uint8_t *)speed_value}},
+    [IDX_CHAR_VAL_CHASE_SPEED]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_CHASE_SPEED, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(chase_speed_value), (uint8_t *)chase_speed_value}},
 
     /* Конфигурационный Дескриптор Клиента */
-    [IDX_CHAR_CFG_SPEED]  =
+    [IDX_CHAR_CFG_CHASE_SPEED]  =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      sizeof(uint16_t), sizeof(speed_ccc), (uint8_t *)speed_ccc}},
+      sizeof(uint16_t), sizeof(chase_speed_ccc), (uint8_t *)chase_speed_ccc}},
 
     // ================================ Длина (в %) светящегося сегмента
     /* Характеристика Режима Мигания */
-    [IDX_CHAR_LENGTH]      =
+    [IDX_CHAR_TAIL_LENGTH]      =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
       CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
 
     /* Значение характеристики Режима Мигания */
-    [IDX_CHAR_VAL_LENGTH]  =
-    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_LENGTH, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(length_value), (uint8_t *)length_value}},
+    [IDX_CHAR_VAL_TAIL_LENGTH]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_TAIL_LENGTH, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(tail_length_value), (uint8_t *)tail_length_value}},
 
     /* Конфигурационный Дескриптор Клиента */
-    [IDX_CHAR_CFG_LENGTH]  =
+    [IDX_CHAR_CFG_TAIL_LENGTH]  =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      sizeof(uint16_t), sizeof(length_ccc), (uint8_t *)length_ccc}},
+      sizeof(uint16_t), sizeof(tail_length_ccc), (uint8_t *)tail_length_ccc}},
 
 
     // ================================ Частота Мигания Ленты
@@ -230,7 +230,23 @@ const esp_gatts_attr_db_t led_strip_gatt_db[LED_STRIP_IDX_NB] =
     /* Конфигурационный Дескриптор Клиента */
     [IDX_CHAR_CFG_FREQUENCY]  =
     {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
-      sizeof(uint16_t), sizeof(frequency_ccc), (uint8_t *)frequency_ccc}}
+      sizeof(uint16_t), sizeof(frequency_ccc), (uint8_t *)frequency_ccc}},
+
+    // ================================ Длина (в %) светящегося сегмента
+    /* Характеристика Режима Мигания */
+    [IDX_CHAR_LS_LENGTH]      =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ,
+      CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read_write_notify}},
+
+    /* Значение характеристики Режима Мигания */
+    [IDX_CHAR_VAL_LS_LENGTH]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_128, (uint8_t *)&GATTS_CHAR_UUID_LS_LENGTH, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(ls_length_value), (uint8_t *)ls_length_value}},
+
+    /* Конфигурационный Дескриптор Клиента */
+    [IDX_CHAR_CFG_LS_LENGTH]  =
+    {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE,
+      sizeof(uint16_t), sizeof(ls_length_ccc), (uint8_t *)ls_length_ccc}}
 
 };
 
@@ -557,19 +573,24 @@ void handle_characteristic(esp_gatts_cb_event_t event, // Событие
             &led_strip_set_brightness);
         
         handle_characteristic(event, gatts_if, param, 
-            IDX_CHAR_VAL_SPEED, IDX_CHAR_CFG_SPEED, 
-            (uint8_t**)&ls_speed, 4, 
-            &led_strip_set_speed);
+            IDX_CHAR_VAL_CHASE_SPEED, IDX_CHAR_CFG_CHASE_SPEED, 
+            (uint8_t**)&ls_chase_speed, 4, 
+            &led_strip_set_chase_speed);
         
         handle_characteristic(event, gatts_if, param, 
-            IDX_CHAR_VAL_LENGTH, IDX_CHAR_CFG_LENGTH, 
-            (uint8_t**)&ls_length, 4, 
-            &led_strip_set_length);
+            IDX_CHAR_VAL_TAIL_LENGTH, IDX_CHAR_CFG_TAIL_LENGTH, 
+            (uint8_t**)&ls_tail_length, 4, 
+            &led_strip_set_tail_length);
         
         handle_characteristic(event, gatts_if, param,
             IDX_CHAR_VAL_FREQUENCY, IDX_CHAR_CFG_FREQUENCY, 
             (uint8_t**)&ls_frequency, 4, 
             &led_strip_set_frequency);
+
+        handle_characteristic(event, gatts_if, param,
+            IDX_CHAR_VAL_LS_LENGTH, IDX_CHAR_CFG_LS_LENGTH, 
+            (uint8_t**)&ls_frequency, 4, 
+            &led_strip_set_length);
 
         /* send response when param->write.need_rsp is true*/
         if (param->write.need_rsp){
